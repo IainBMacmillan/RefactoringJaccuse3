@@ -82,12 +82,7 @@ def running_game():
 
         if current_location == 'TAXI':
             print(' You are in your TAXI. Where do you want to go?')
-            for show_place in sorted(PLACES):
-                if show_place in visited_places:
-                    place_info = visited_places[show_place]
-                    name_label = '(' + show_place[0] + ')' + show_place[1:]
-                    spacing = " " * (moves_display_format - len(show_place))
-                    print('{} {}{}'.format(name_label, spacing, place_info))
+            display_visited_places(visited_places)
             print('(Q)UIT GAME')
             where_to = to_location()
             if where_to == 'Q':
@@ -166,6 +161,15 @@ def running_game():
                     known_suspects_and_items.append(clues[the_person_here][thing_being_asked_about])
 
         input('Press Enter to continue...')
+
+
+def display_visited_places(visited_places) -> None:
+    for show_place in sorted(PLACES):
+        if show_place in visited_places:
+            place_info = visited_places[show_place]
+            name_label = '(' + show_place[0] + ')' + show_place[1:]
+            spacing = " " * (moves_display_format - len(show_place))
+            print(f'{name_label} {spacing}{place_info}')
 
 
 def display_accused_over(culprit) -> None:
