@@ -91,18 +91,15 @@ def running_game():
             current_location = move_to_location[where_to]
             continue
 
-        print(' You are at the {}.'.format(current_location))
+        print(f' You are at the {current_location}.')
         current_location_index = PLACES.index(current_location)
         the_person_here = SUSPECTS[current_location_index]
         the_item_here = ITEMS[current_location_index]
-        print(' {} with the {} is here.'.format(the_person_here, the_item_here))
+        print(f' {the_person_here} with the {the_item_here} is here.')
 
-        if the_person_here not in known_suspects_and_items:
-            known_suspects_and_items.append(the_person_here)
-        if ITEMS[current_location_index] not in known_suspects_and_items:
-            known_suspects_and_items.append(ITEMS[current_location_index])
+        update_known_suspects_items(known_suspects_and_items, the_person_here, the_item_here)
         if current_location not in visited_places.keys():
-            visited_places[current_location] = '({}, {})'.format(the_person_here.lower(), the_item_here.lower())
+            visited_places[current_location] = f'({the_person_here}, {the_item_here})'
 
         if the_person_here in accused_suspects:
             print('They are offended that you accused them,')
@@ -117,8 +114,8 @@ def running_game():
         print('(J) "J\'ACCUSE!" ({} accusations left)'.format(accusations.count_left()))
         print('(Z) Ask if they know where ZOPHIE THE CAT is.')
         print('(T) Go back to the TAXI.')
-        for i, suspectOrItem in enumerate(known_suspects_and_items):
-            print('({}) Ask about {}'.format(i + 1, suspectOrItem))
+        for clue_ref, suspectOrItem in enumerate(known_suspects_and_items, start=1):
+            print(f'({clue_ref}) Ask about {suspectOrItem}')
 
         ask_about = query_clue(known_suspects_and_items)
 
@@ -161,6 +158,13 @@ def running_game():
                     known_suspects_and_items.append(clues[the_person_here][thing_being_asked_about])
 
         input('Press Enter to continue...')
+
+
+def update_known_suspects_items(known_suspects_and_items: list[str], interviewee: str, local_item: str):
+    if interviewee not in known_suspects_and_items:
+        known_suspects_and_items.append(interviewee)
+    if local_item not in known_suspects_and_items:
+        known_suspects_and_items.append(local_item)
 
 
 def display_visited_places(visited_places) -> None:
