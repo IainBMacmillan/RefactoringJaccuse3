@@ -11,9 +11,6 @@ TIME_TO_SOLVE = 300
 MAX_ACCUSATIONS = 3
 
 PLACE_FIRST_LETTERS = move_to_location
-for place in PLACES:
-    PLACE_FIRST_LETTERS[place[0]] = place
-PLACE_FIRST_LETTERS['Q'] = 'QUIT GAME'
 LONGEST_PLACE_NAME_LENGTH = moves_display_format
 
 
@@ -80,15 +77,11 @@ def running_game():
             game_running = False
             continue
         if accusations.is_none_left():
-            print('You have accused too many innocent people!')
-            culprit_index = SUSPECTS.index(culprit)
-            print('It was {} at the {} with the {} who catnapped her!'.format(culprit, PLACES[culprit_index],
-                                                                              ITEMS[culprit_index]))
-            print('Better luck next time, Detective.')
+            display_accused_over(culprit)
             game_running = False
             continue
 
-        timer.display_time_taken()
+        timer.display_time_remaining()
 
         if current_location == 'TAXI':
             print(' You are in your TAXI. Where do you want to go?')
@@ -142,7 +135,7 @@ def running_game():
             if the_person_here == culprit:
                 print('You\'ve cracked the case, Detective!')
                 print('It was {} who had catnapped ZOPHIE THE CAT.'.format(culprit))
-                timer.display_time_remaining()
+                timer.display_time_taken()
                 game_running = False
             else:
                 accused_suspects.append(the_person_here)
@@ -176,6 +169,15 @@ def running_game():
                     known_suspects_and_items.append(clues[the_person_here][thing_being_asked_about])
 
         input('Press Enter to continue...')
+
+
+def display_accused_over(culprit) -> None:
+    print()
+    print(f'You have accused too many innocent people!')
+    print()
+    culprit_index = SUSPECTS.index(culprit)
+    print(f'It was {culprit} at the {PLACES[culprit_index]} with the {ITEMS[culprit_index]} who catnapped her!')
+    print(f'Better luck next time, Detective.')
 
 
 def game_intro():
