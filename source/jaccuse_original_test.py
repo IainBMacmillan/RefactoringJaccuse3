@@ -1,6 +1,6 @@
 import random
 import time
-
+from dataclasses import dataclass
 from source.initial_data import test_data as data, move_to_location, moves_display_format
 from source.user_entry import query_clue, to_location
 
@@ -17,46 +17,63 @@ PLACE_FIRST_LETTERS['Q'] = 'QUIT GAME'
 LONGEST_PLACE_NAME_LENGTH = moves_display_format
 
 
+@dataclass
+class GameClock:
+    def __init__(self, duration=TIME_TO_SOLVE):
+        self.start = time.time()
+        self.end = self.start + duration
+
+    def is_time_over(self) -> bool:
+        return time.time() > self.end
+
+    def display_time_remaining(self) -> None:
+        minutes_left = int(self.end - time.time()) // 60
+        seconds_left = int(self.end - time.time()) % 60
+        print()
+        print(f'Time left: {minutes_left} min, {seconds_left} sec')
+
+    def display_time_taken(self) -> None:
+        minutes_taken = int(time.time() - self.start) // 60
+        seconds_taken = int(time.time() - self.start) % 60
+        print()
+        print(f'Good job! You solved it in {minutes_taken} min, {seconds_taken} sec.')
+
+
 def jaccuse_game():
+    game_intro()
+    running_game()
+
+
+def running_game():
+    timer: GameClock = GameClock()
+
     liars = data.liars
     culprit = data.culprit
     current_location = 'TAXI'
-    known_suspects_and_items: list[str] = []
-    visited_places = {}
-    accused_suspects = []
-    accusations_left = MAX_ACCUSATIONS
 
     clues = suspects_answers(liars)
     zophie_clues = suspects_zophie_answers(culprit, liars)
+    accusations_left: int = MAX_ACCUSATIONS
+    accused_suspects: list[str] = []
+    known_suspects_and_items: list[str] = []
+    visited_places = {}
 
-    game_intro()
-
-    start_time = time.time()
-    end_time = start_time + TIME_TO_SOLVE
-    running_game(accusations_left, accused_suspects, clues, culprit, current_location, end_time,
-                 known_suspects_and_items, start_time, visited_places, zophie_clues)
-
-
-def running_game(accusations_left, accused_suspects, clues, culprit, current_location, end_time,
-                 known_suspects_and_items, start_time, visited_places, zophie_clues):
     game_running: bool = True
     while game_running:
-        if time.time() > end_time or accusations_left == 0:
-            if time.time() > end_time:
-                print('You have run out of time!')
-            elif accusations_left == 0:
-                print('You have accused too many innocent people!')
-                culprit_index = SUSPECTS.index(culprit)
-                print('It was {} at the {} with the {} who catnapped her!'.format(culprit, PLACES[culprit_index],
-                                                                                  ITEMS[culprit_index]))
-                print('Better luck next time, Detective.')
-                game_running = False
-                continue
+        if timer.is_time_over():
+            print('You have run out of time!')
+            game_running = False
+            continue
+        if accusations_left == 0:
+            print('You have accused too many innocent people!')
+            culprit_index = SUSPECTS.index(culprit)
+            print('It was {} at the {} with the {} who catnapped her!'.format(culprit, PLACES[culprit_index],
+                                                                              ITEMS[culprit_index]))
+            print('Better luck next time, Detective.')
+            game_running = False
+            continue
 
-        print()
-        minutes_left = int(end_time - time.time()) // 60
-        seconds_left = int(end_time - time.time()) % 60
-        print('Time left: {} min, {} sec'.format(minutes_left, seconds_left))
+        timer.display_time_taken()
 
         if current_location == 'TAXI':
             print(' You are in your TAXI. Where do you want to go?')
@@ -110,9 +127,7 @@ def running_game(accusations_left, accused_suspects, clues, culprit, current_loc
             if the_person_here == culprit:
                 print('You\'ve cracked the case, Detective!')
                 print('It was {} who had catnapped ZOPHIE THE CAT.'.format(culprit))
-                minutes_taken = int(time.time() - start_time) // 60
-                seconds_taken = int(time.time() - start_time) % 60
-                print('Good job! You solved it in {} min, {} sec.'.format(minutes_taken, seconds_taken))
+                timer.display_time_remaining()
                 game_running = False
             else:
                 accused_suspects.append(the_person_here)
