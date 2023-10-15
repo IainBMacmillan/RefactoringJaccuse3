@@ -39,6 +39,21 @@ class GameClock:
         print(f'Good job! You solved it in {minutes_taken} min, {seconds_taken} sec.')
 
 
+@dataclass
+class Accusations:
+    def __init__(self, max_guesses: int) -> None:
+        self.count: int = max_guesses
+
+    def is_none_left(self) -> bool:
+        return True if self.count == 0 else False
+
+    def count_left(self) -> int:
+        return self.count
+
+    def reduce(self) -> None:
+        self.count -= 1
+
+
 def jaccuse_game():
     game_intro()
     running_game()
@@ -53,7 +68,7 @@ def running_game():
 
     clues = suspects_answers(liars)
     zophie_clues = suspects_zophie_answers(culprit, liars)
-    accusations_left: int = MAX_ACCUSATIONS
+    accusations: Accusations = Accusations(MAX_ACCUSATIONS)
     accused_suspects: list[str] = []
     known_suspects_and_items: list[str] = []
     visited_places = {}
@@ -64,7 +79,7 @@ def running_game():
             print('You have run out of time!')
             game_running = False
             continue
-        if accusations_left == 0:
+        if accusations.is_none_left():
             print('You have accused too many innocent people!')
             culprit_index = SUSPECTS.index(culprit)
             print('It was {} at the {} with the {} who catnapped her!'.format(culprit, PLACES[culprit_index],
@@ -114,7 +129,7 @@ def running_game():
             continue
 
         print()
-        print('(J) "J\'ACCUSE!" ({} accusations left)'.format(accusations_left))
+        print('(J) "J\'ACCUSE!" ({} accusations left)'.format(accusations.count_left()))
         print('(Z) Ask if they know where ZOPHIE THE CAT is.')
         print('(T) Go back to the TAXI.')
         for i, suspectOrItem in enumerate(known_suspects_and_items):
@@ -123,7 +138,7 @@ def running_game():
         ask_about = query_clue(known_suspects_and_items)
 
         if ask_about == 'J':
-            accusations_left -= 1
+            accusations.reduce()
             if the_person_here == culprit:
                 print('You\'ve cracked the case, Detective!')
                 print('It was {} who had catnapped ZOPHIE THE CAT.'.format(culprit))
