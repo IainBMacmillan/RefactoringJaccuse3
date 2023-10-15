@@ -9,10 +9,10 @@ Tags: extra-large, game, humor, puzzle
 # https://homestarrunner.com/videlectrix/wheresanegg.html
 # More info at: http://www.hrwiki.org/wiki/Where's_an_Egg%3F
 
-import time
 import random
-from game.data import test_data as data
+import time
 
+from source.initial_data import test_data as data, move_to_location, moves_display_format
 from source.user_entry import query_clue, to_location
 
 # Set up the constants:
@@ -23,11 +23,11 @@ TIME_TO_SOLVE = 300
 MAX_ACCUSATIONS = 3
 
 # First letters and longest length of places are needed for menu display:
-PLACE_FIRST_LETTERS = {}
+PLACE_FIRST_LETTERS = move_to_location
 for place in PLACES:
     PLACE_FIRST_LETTERS[place[0]] = place
 PLACE_FIRST_LETTERS['Q'] = 'QUIT GAME'
-LONGEST_PLACE_NAME_LENGTH = len(max(PLACES, key=len))
+LONGEST_PLACE_NAME_LENGTH = moves_display_format
 
 
 def jaccuse_game():

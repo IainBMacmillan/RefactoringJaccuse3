@@ -9,6 +9,18 @@ PLACES: list = ['ZOO', 'OLD BARN', 'DUCK POND', 'CITY HALL', 'HIPSTER CAFE', 'BO
                 'UNIVERSITY LIBRARY', 'ALBINO ALLIGATOR PIT']
 
 
+def moves() -> dict[str, str]:
+    place_first_letters: dict[str, str] = {}
+    for place in PLACES:
+        place_first_letters[place[0]] = place
+    place_first_letters['Q'] = 'QUIT GAME'
+    return place_first_letters
+
+
+move_to_location = moves()
+moves_display_format = len(max(PLACES, key=len))
+
+
 @dataclass
 class GameData:
     def __init__(self, places, suspects, items,
@@ -18,7 +30,7 @@ class GameData:
         self.items: list[str] = items
         self.liars: list[str] = sample(suspects, randint(3, 4)) if liars is None else liars
         self.zophie_suspects: list[str] = sample(suspects, randint(3, 4)) if zophie is None else zophie
-        self.culprit: str = choice(suspects)if culprit is None else culprit
+        self.culprit: str = choice(suspects) if culprit is None else culprit
 
 
 shuffle(PLACES)
