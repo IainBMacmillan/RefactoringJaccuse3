@@ -10,9 +10,6 @@ PLACES = data.places
 TIME_TO_SOLVE = 300
 MAX_ACCUSATIONS = 3
 
-PLACE_FIRST_LETTERS = move_to_location
-LONGEST_PLACE_NAME_LENGTH = moves_display_format
-
 
 @dataclass
 class GameClock:
@@ -89,14 +86,14 @@ def running_game():
                 if show_place in visited_places:
                     place_info = visited_places[show_place]
                     name_label = '(' + show_place[0] + ')' + show_place[1:]
-                    spacing = " " * (LONGEST_PLACE_NAME_LENGTH - len(show_place))
+                    spacing = " " * (moves_display_format - len(show_place))
                     print('{} {}{}'.format(name_label, spacing, place_info))
             print('(Q)UIT GAME')
             where_to = to_location()
             if where_to == 'Q':
                 print('Thanks for playing!')
                 game_running = False
-            current_location = PLACE_FIRST_LETTERS[where_to]
+            current_location = move_to_location[where_to]
             continue
 
         print(' You are at the {}.'.format(current_location))
