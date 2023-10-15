@@ -6,7 +6,7 @@ class MyWriter:
 
     def __init__(self, stdout, filename):
         self.stdout = stdout
-        self.logfile = open(filename, 'a')
+        self.logfile = open(filename, 'w')
 
     def write(self, text):
         self.stdout.write(text)

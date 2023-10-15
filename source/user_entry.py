@@ -18,17 +18,3 @@ def to_location() -> str:
 def run_to_location() -> str:
     # used to test the mocker function against to_location
     return to_location()
-
-
-def mini_game():
-    answer: str = ''
-    running: bool = True
-    while running:
-        answer = to_location()
-        if answer == 'A':
-            print('Going to Pit')
-        if answer == 'T':
-            print('Going to Taxi')
-        if answer == 'Q':
-            print('Quit game')
-            running = False
