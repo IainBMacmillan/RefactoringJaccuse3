@@ -74,8 +74,8 @@ def running_game():
         detectives_notes.update_clues(local_details)
         update_visited_places(local_details, visited_places)
 
-        if local_details["suspect"] in accused_suspects:
-            display_previously_accused()
+        if accusations.was_accused(local_details["suspect"]):
+            accusations.display_previously_accused()
             current_location = 'TAXI'
             continue
 
@@ -83,13 +83,12 @@ def running_game():
         ask_about = query_clue(detectives_notes.notes)
 
         if ask_about == 'J':
-            accusations.reduce()
-            accused_suspects.append(local_details["suspect"])
+            accusations.add_an_accused(local_details["suspect"])
             if local_details["suspect"] == culprit:
                 display_winners_info(culprit, timer)
                 game_running = False
             else:
-                display_wrongly_accused()
+                accusations.display_wrongly_accused()
                 current_location = 'TAXI'
 
         elif ask_about == 'Z':
@@ -141,12 +140,6 @@ def ask_about_zophie(current_person, known_suspects_and_items, zophie_clues):
             known_suspects_and_items.append(zophie_clues[current_person])
 
 
-def display_wrongly_accused():
-    print('You have accused the wrong person, Detective!')
-    print('They will not help you with anymore clues.')
-    print('You go back to your TAXI.')
-
-
 def display_winners_info(culprit, timer):
     print('You\'ve cracked the case, Detective!')
     print(f'It was {culprit} who had catnapped ZOPHIE THE CAT.')
@@ -160,14 +153,6 @@ def display_detectives_known_clues(accusations, known_suspects_and_items):
     print('(T) Go back to the TAXI.')
     for clue_ref, suspectOrItem in enumerate(known_suspects_and_items, start=1):
         print(f'({clue_ref}) Ask about {suspectOrItem}')
-
-
-def display_previously_accused():
-    print('They are offended that you accused them,')
-    print('and will not help with your investigation.')
-    print('You go back to your TAXI.')
-    print()
-    input('Press Enter to continue...')
 
 
 def update_known_suspects_items(known_suspects_and_items: list[str], local_details: dict[str:str], given_clue=None):

@@ -20,6 +20,13 @@ class MyWriter:
         ...
 
 
+"""  use this to run tests to files
+path = folder and filename
+with open(path, 'w') as f:
+    with contextlib.redirect_stdout(f):
+        print('Hello, World')
+"""
+
 def main() -> None:
     writer = MyWriter(sys.stdout,'approval_results/user_test_3.txt')
     sys.stdout = writer

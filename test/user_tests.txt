@@ -1,0 +1,118 @@
+User Test 1 - quit at start
+    Start Game, press Enter ('\n')
+    Press 'Q'  # game ends
+
+User Test 2 - is liar, is culprit, know zophie
+(DUKE, DUCK POND)
+    Start Game, press Enter ('\n')
+    Press 'B' # a location
+    Press 'Z' # ask about zophie cat
+    Press '\n' # refresh user options
+    Press 'T' # return to Taxi
+    Press '\n' # refresh user options
+    Press 'Q' # game ends
+
+User Test 3 - not liar, not culprit, know zophie
+(CECIL, BOWLING ALLEY) 
+    Start Game, press Enter ('\n')
+    Press 'B'  # a location
+    Press 'Z'  # ask about Zophie Cat
+    Press '\n' # refresh user options
+    Press 'T' # return to Taxi
+    Press 'Q' # game ends
+
+User Test 4 - not liar, culprit, doesnt know zophie
+(SENATOR, ZOO)
+    Start Game, press Enter ('\n')
+    Press 'Z' # a location
+    Press 'Z' # ask about Zophie Cat
+    Press '\n' # refresh user options
+    Press 'T' # return to Taxi
+    Press 'Q' # game ends
+
+User Test 5 - not culprit, accused twice
+(BILL, ALBINO ALLIGATOR PIT)
+	Start Game, press Enter ('\n')
+	Press 'A'
+	Press 'J'
+	Press '\n' # refresh user options
+	Press 'A'
+	Press '\n' # refresh user options    
+	Press 'Q'
+
+User Test 6 - culprit accused
+(SENATOR, ZOO)
+	Start Game, press Enter ('\n')
+	Press 'Z'
+	Press 'J'
+	Press '\n' # refresh user options
+
+User Test 7 - 3 suspects accused
+(first 3 places selected)
+	Start Game, press Enter ('\n')
+	Press 'A'
+	Press 'J'
+	Press '\n' # refresh user options
+	Press 'B'
+	Press 'J'
+	Press '\n' # refresh user options
+	Press 'C'
+	Press 'J'
+
+User Test 8 - not liar respond to own clues
+BILL, ALBINO ALLIGATOR PIT
+	Start Game, press Enter ('\n')
+	Press 'A'
+	Press '1'  = They give you this clue: "No comment."
+ 	Press '\n' # refresh user options
+	Press 'T' # return to Taxi
+	Press 'Q' # game ends
+	
+User Test 9 - liar respond to own clues
+DUKE, DUCK POND
+	Start Game, press Enter ('\n')
+	Press 'D'
+	Press '1'  = They give you this clue: "No comment."
+ 	Press '\n' # refresh user options
+	Press 'T' # return to Taxi
+	Press 'Q' # game ends
+
+UserTest 10 - culprit respond to own clues
+SENATOR, ZOO
+	Start Game, press Enter ('\n')
+	Press 'Z'
+	Press '1'  = They give you this clue: "No comment."
+ 	Press '\n' # refresh user options
+	Press 'T' # return to Taxi
+	Press 'Q' # game ends
+
+User Test 11 - not liar gives clue for other suspect
+CECIL, BOWLING ALLEY
+	Start Game, press Enter ('\n')
+	Press 'A'
+	Press 'T' # return to Taxi
+	Press 'B
+	Press '1'  is in ['ALBINO ALLIGATOR PIT', 'BILL MONOPOLIS', '5 DOLLAR GIFT CARD']
+ 	Press '\n' # refresh user options
+	Press 'T' # return to Taxi
+	Press 'Q' # game ends
+
+User Test 12 - liar gives clue for other suspect
+(DUKE, DUCK POND)
+	Start Game, press Enter ('\n')
+	Press 'A'
+ 	Press 'T' # return to Taxi
+	Press 'D'
+	Press '1' is not in ['ALBINO ALLIGATOR PIT', 'BILL MONOPOLIS', '5 DOLLAR GIFT CARD']
+ 	Press '\n' # refresh user options
+	Press 'T' # return to Taxi
+	Press 'Q' # game ends
+
+
+
+
+
+
+
+
+

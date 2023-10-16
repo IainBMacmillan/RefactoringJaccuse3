@@ -1,0 +1,8 @@
+
+   Test 2 - added local clues
+
+ (J) "J'ACCUSE!" (2 accusations left)
+ (Z) Ask if they know where ZOPHIE THE CAT is.
+ (T) Go back to the TAXI.
+ (1) Ask about DUKE HAUTDOG
+ (2) Ask about CLEAN UNDERPANTS
