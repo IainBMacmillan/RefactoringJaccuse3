@@ -21,8 +21,7 @@ class MyWriter:
 
 
 def main() -> None:
-    writer = MyWriter(sys.stdout,
-                      'approval_results/user_test_5.txt')
+    writer = MyWriter(sys.stdout,'approval_results/user_test_3.txt')
     sys.stdout = writer
 
     jaccuse_game()

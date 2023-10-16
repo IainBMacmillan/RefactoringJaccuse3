@@ -1,56 +1,32 @@
-import random
-import time
-from dataclasses import dataclass
 from source.initial_data import test_data as data, move_to_location, moves_display_format
+from source.prep_game_data import MAX_ACCUSATIONS, GameClock, Accusations, DetectiveNotes, suspects_zophie_answers, \
+    suspects_answers
 from source.user_entry import query_clue, to_location
 
 SUSPECTS = data.suspects
 ITEMS = data.items
 PLACES = data.places
-TIME_TO_SOLVE = 300
-MAX_ACCUSATIONS = 3
-
-
-@dataclass
-class GameClock:
-    def __init__(self, duration=TIME_TO_SOLVE):
-        self.start = time.time()
-        self.end = self.start + duration
-
-    def is_time_over(self) -> bool:
-        return time.time() > self.end
-
-    def display_time_remaining(self) -> None:
-        minutes_left = int(self.end - time.time()) // 60
-        seconds_left = int(self.end - time.time()) % 60
-        print()
-        print(f'Time left: {minutes_left} min, {seconds_left} sec')
-
-    def display_time_taken(self) -> None:
-        minutes_taken = int(time.time() - self.start) // 60
-        seconds_taken = int(time.time() - self.start) % 60
-        print()
-        print(f'Good job! You solved it in {minutes_taken} min, {seconds_taken} sec.')
-
-
-@dataclass
-class Accusations:
-    def __init__(self, max_guesses: int) -> None:
-        self.count: int = max_guesses
-
-    def is_none_left(self) -> bool:
-        return True if self.count == 0 else False
-
-    def count_left(self) -> int:
-        return self.count
-
-    def reduce(self) -> None:
-        self.count -= 1
 
 
 def jaccuse_game():
-    game_intro()
+    display_game_intro()
     running_game()
+
+
+def display_game_intro():
+    print("""J'ACCUSE! (a mystery game)")
+    By Al Sweigart al@inventwithpython.com 
+    Inspired by Homestar Runner\'s "Where\'s an Egg?" game 
+
+    You are the world-famous detective, Mathilde Camus. 
+    ZOPHIE THE CAT has gone missing, and you must sift through the clues. 
+    Suspects either always tell lies, or always tell the truth. Ask them 
+    about other people, places, and items to see if the details they give are 
+    truthful and consistent with your observations. Then you will know if 
+    their clue about ZOPHIE THE CAT is true or not. Will you find ZOPHIE THE 
+    CAT in time and accuse the guilty party? 
+    """)
+    input('Press Enter to begin...')
 
 
 def running_game():
@@ -64,7 +40,7 @@ def running_game():
     zophie_clues = suspects_zophie_answers(culprit, liars)
     accusations: Accusations = Accusations(MAX_ACCUSATIONS)
     accused_suspects: list[str] = []
-    known_suspects_and_items: list[str] = []
+    detectives_notes: DetectiveNotes = DetectiveNotes()
     visited_places = {}
 
     game_running: bool = True
@@ -84,7 +60,7 @@ def running_game():
             print(' You are in your TAXI. Where do you want to go?')
             display_visited_places(visited_places)
             print('(Q)UIT GAME')
-            where_to = to_location()
+            where_to = to_location(move_to_location)
             if where_to == 'Q':
                 print('Thanks for playing!')
                 game_running = False
@@ -92,79 +68,115 @@ def running_game():
             continue
 
         print(f' You are at the {current_location}.')
-        current_location_index = PLACES.index(current_location)
-        the_person_here = SUSPECTS[current_location_index]
-        the_item_here = ITEMS[current_location_index]
-        print(f' {the_person_here} with the {the_item_here} is here.')
+        local_details: dict[str:str] = get_current_details(current_location)
+        print(f' {local_details["suspect"]} with the {local_details["item"]} is here.')
 
-        update_known_suspects_items(known_suspects_and_items, the_person_here, the_item_here)
-        if current_location not in visited_places.keys():
-            visited_places[current_location] = f'({the_person_here}, {the_item_here})'
+        detectives_notes.update_clues(local_details)
+        update_visited_places(local_details, visited_places)
 
-        if the_person_here in accused_suspects:
-            print('They are offended that you accused them,')
-            print('and will not help with your investigation.')
-            print('You go back to your TAXI.')
-            print()
-            input('Press Enter to continue...')
+        if local_details["suspect"] in accused_suspects:
+            display_previously_accused()
             current_location = 'TAXI'
             continue
 
-        print()
-        print('(J) "J\'ACCUSE!" ({} accusations left)'.format(accusations.count_left()))
-        print('(Z) Ask if they know where ZOPHIE THE CAT is.')
-        print('(T) Go back to the TAXI.')
-        for clue_ref, suspectOrItem in enumerate(known_suspects_and_items, start=1):
-            print(f'({clue_ref}) Ask about {suspectOrItem}')
-
-        ask_about = query_clue(known_suspects_and_items)
+        detectives_notes.display_notes(accusations.remaining())
+        ask_about = query_clue(detectives_notes.notes)
 
         if ask_about == 'J':
             accusations.reduce()
-            if the_person_here == culprit:
-                print('You\'ve cracked the case, Detective!')
-                print('It was {} who had catnapped ZOPHIE THE CAT.'.format(culprit))
-                timer.display_time_taken()
+            accused_suspects.append(local_details["suspect"])
+            if local_details["suspect"] == culprit:
+                display_winners_info(culprit, timer)
                 game_running = False
             else:
-                accused_suspects.append(the_person_here)
-                print('You have accused the wrong person, Detective!')
-                print('They will not help you with anymore clues.')
-                print('You go back to your TAXI.')
+                display_wrongly_accused()
                 current_location = 'TAXI'
 
         elif ask_about == 'Z':
-            if the_person_here not in zophie_clues:
-                print('"I don\'t know anything about ZOPHIE THE CAT."')
-            elif the_person_here in zophie_clues:
-                print(' They give you this clue: "{}"'.format(zophie_clues[the_person_here]))
-                if zophie_clues[the_person_here] not in known_suspects_and_items and \
-                        zophie_clues[the_person_here] not in PLACES:
-                    known_suspects_and_items.append(zophie_clues[the_person_here])
+            ask_about_zophie(local_details["suspect"], detectives_notes.notes, zophie_clues)
+            current_location = current_location
 
         elif ask_about == 'T':
             current_location = 'TAXI'
-            continue
 
-        else:
-            thing_being_asked_about = known_suspects_and_items[int(ask_about) - 1]
-            if thing_being_asked_about in (the_person_here, the_item_here):
-                print(' They give you this clue: "No comment."')
-            else:
-                print(' They give you this clue: "{}"'.format(clues[the_person_here][thing_being_asked_about]))
-                # Add non-place clues to the list of known things:
-                if clues[the_person_here][thing_being_asked_about] not in known_suspects_and_items and \
-                        clues[the_person_here][thing_being_asked_about] not in PLACES:
-                    known_suspects_and_items.append(clues[the_person_here][thing_being_asked_about])
+        else:  # numerical clue from known_suspects_items
+            given_clue = ask_about_suspect_clues(ask_about, clues, local_details, detectives_notes.notes)
+            detectives_notes.update_clues(local_details, given_clue)
+            current_location = current_location
 
         input('Press Enter to continue...')
 
 
-def update_known_suspects_items(known_suspects_and_items: list[str], interviewee: str, local_item: str):
-    if interviewee not in known_suspects_and_items:
-        known_suspects_and_items.append(interviewee)
-    if local_item not in known_suspects_and_items:
-        known_suspects_and_items.append(local_item)
+def update_visited_places(local_details, visited_places):
+    if local_details["place"] not in visited_places.keys():
+        visited_places[local_details["place"]] = f'({local_details["suspect"]}, {local_details["item"]})'
+
+
+def get_current_details(current_location) -> dict[str, str]:
+    current_location_index = PLACES.index(current_location)
+    current_person = SUSPECTS[current_location_index]
+    current_item = ITEMS[current_location_index]
+    local_details = {'place': current_location, 'suspect': current_person, 'item': current_item}
+    return local_details
+
+
+def ask_about_suspect_clues(ask_about, clues, local_details, known_suspects_and_items) -> str:
+    thing_being_asked_about = known_suspects_and_items[int(ask_about) - 1]
+    if thing_being_asked_about in (local_details["suspect"], local_details["item"]):
+        given_clue = None
+        print(' They give you this clue: "No comment."')
+    else:
+        given_clue = clues[local_details["suspect"]][thing_being_asked_about]
+        print(f'They give you this clue: "{given_clue}"')
+    return given_clue
+
+
+def ask_about_zophie(current_person, known_suspects_and_items, zophie_clues):
+    if current_person not in zophie_clues:
+        print('"I don\'t know anything about ZOPHIE THE CAT."')
+    elif current_person in zophie_clues:
+        print(f' They give you this clue: "{zophie_clues[current_person]}"')
+        if zophie_clues[current_person] not in known_suspects_and_items and \
+                zophie_clues[current_person] not in PLACES:
+            known_suspects_and_items.append(zophie_clues[current_person])
+
+
+def display_wrongly_accused():
+    print('You have accused the wrong person, Detective!')
+    print('They will not help you with anymore clues.')
+    print('You go back to your TAXI.')
+
+
+def display_winners_info(culprit, timer):
+    print('You\'ve cracked the case, Detective!')
+    print(f'It was {culprit} who had catnapped ZOPHIE THE CAT.')
+    timer.display_time_taken()
+
+
+def display_detectives_known_clues(accusations, known_suspects_and_items):
+    print()
+    print('(J) "J\'ACCUSE!" ({} accusations left)'.format(accusations.remaining()))
+    print('(Z) Ask if they know where ZOPHIE THE CAT is.')
+    print('(T) Go back to the TAXI.')
+    for clue_ref, suspectOrItem in enumerate(known_suspects_and_items, start=1):
+        print(f'({clue_ref}) Ask about {suspectOrItem}')
+
+
+def display_previously_accused():
+    print('They are offended that you accused them,')
+    print('and will not help with your investigation.')
+    print('You go back to your TAXI.')
+    print()
+    input('Press Enter to continue...')
+
+
+def update_known_suspects_items(known_suspects_and_items: list[str], local_details: dict[str:str], given_clue=None):
+    if given_clue is not None and given_clue not in PLACES and given_clue not in known_suspects_and_items:
+        known_suspects_and_items.append(given_clue)
+    if local_details["suspect"] not in known_suspects_and_items:
+        known_suspects_and_items.append(local_details["suspect"])
+    if local_details["item"] not in known_suspects_and_items:
+        known_suspects_and_items.append(local_details["item"])
 
 
 def display_visited_places(visited_places) -> None:
@@ -183,101 +195,6 @@ def display_accused_over(culprit) -> None:
     culprit_index = SUSPECTS.index(culprit)
     print(f'It was {culprit} at the {PLACES[culprit_index]} with the {ITEMS[culprit_index]} who catnapped her!')
     print(f'Better luck next time, Detective.')
-
-
-def game_intro():
-    print("""J'ACCUSE! (a mystery game)")
-    By Al Sweigart al@inventwithpython.com 
-    Inspired by Homestar Runner\'s "Where\'s an Egg?" game 
-    
-    You are the world-famous detective, Mathilde Camus. 
-    ZOPHIE THE CAT has gone missing, and you must sift through the clues. 
-    Suspects either always tell lies, or always tell the truth. Ask them 
-    about other people, places, and items to see if the details they give are 
-    truthful and consistent with your observations. Then you will know if 
-    their clue about ZOPHIE THE CAT is true or not. Will you find ZOPHIE THE 
-    CAT in time and accuse the guilty party? 
-    """)
-    input('Press Enter to begin...')
-
-
-def suspects_zophie_answers(culprit, liars):
-    zophie_clues = {}
-    for interviewee in data.zophie_suspects:
-        kind_of_clue = random.randint(1, 3)
-        if kind_of_clue == 1:
-            if interviewee not in liars:
-                zophie_clues[interviewee] = culprit
-            elif interviewee in liars:
-                while True:
-                    zophie_clues[interviewee] = random.choice(SUSPECTS)
-                    if zophie_clues[interviewee] != culprit:
-                        break
-        elif kind_of_clue == 2:
-            if interviewee not in liars:
-                zophie_clues[interviewee] = PLACES[SUSPECTS.index(culprit)]
-            elif interviewee in liars:
-                while True:
-                    zophie_clues[interviewee] = random.choice(PLACES)
-                    if zophie_clues[interviewee] != PLACES[SUSPECTS.index(culprit)]:
-                        break
-        elif kind_of_clue == 3:
-            if interviewee not in liars:
-                zophie_clues[interviewee] = ITEMS[SUSPECTS.index(culprit)]
-            elif interviewee in liars:
-                while True:
-                    zophie_clues[interviewee] = random.choice(ITEMS)
-                    if zophie_clues[interviewee] != ITEMS[SUSPECTS.index(culprit)]:
-                        break
-    return zophie_clues
-
-
-def suspects_answers(liars):
-    clues = {}
-    for i, interviewee in enumerate(SUSPECTS):
-        if interviewee in liars:
-            continue
-
-        clues[interviewee] = {}
-        clues[interviewee]['debug_liar'] = False
-        for item in ITEMS:
-            if random.randint(0, 1) == 0:
-                clues[interviewee][item] = PLACES[ITEMS.index(item)]
-            else:
-                clues[interviewee][item] = SUSPECTS[ITEMS.index(item)]
-        for suspect in SUSPECTS:
-            if random.randint(0, 1) == 0:
-                clues[interviewee][suspect] = PLACES[SUSPECTS.index(suspect)]
-            else:
-                clues[interviewee][suspect] = ITEMS[SUSPECTS.index(suspect)]
-    for i, interviewee in enumerate(SUSPECTS):
-        if interviewee not in liars:
-            continue
-
-        clues[interviewee] = {}
-        for item in ITEMS:
-            if random.randint(0, 1) == 0:
-                while True:
-                    clues[interviewee][item] = random.choice(PLACES)
-                    if clues[interviewee][item] != PLACES[ITEMS.index(item)]:
-                        break
-            else:
-                while True:
-                    clues[interviewee][item] = random.choice(SUSPECTS)
-                    if clues[interviewee][item] != SUSPECTS[ITEMS.index(item)]:
-                        break
-        for suspect in SUSPECTS:
-            if random.randint(0, 1) == 0:
-                while True:
-                    clues[interviewee][suspect] = random.choice(PLACES)
-                    if clues[interviewee][suspect] != PLACES[SUSPECTS.index(suspect)]:
-                        break
-            else:
-                while True:
-                    clues[interviewee][suspect] = random.choice(ITEMS)
-                    if clues[interviewee][suspect] != ITEMS[SUSPECTS.index(suspect)]:
-                        break
-    return clues
 
 
 def main():

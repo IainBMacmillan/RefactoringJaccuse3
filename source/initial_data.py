@@ -17,7 +17,7 @@ def moves() -> dict[str, str]:
     return place_first_letters
 
 
-move_to_location = moves()
+move_to_location: dict[str, str] = moves()
 moves_display_format = len(max(PLACES, key=len))
 
 

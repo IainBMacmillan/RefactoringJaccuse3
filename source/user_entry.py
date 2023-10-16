@@ -1,20 +1,16 @@
-from source.initial_data import move_to_location
 
-known_clues = ['ADAM', 'APPLE', 'EVE']
-
-def query_clue(known_suspects_and_items: list[str]) -> str:
+def user_input(commands: dict[str, str]) -> str:
     while True:
-        ask_about = input('> ').upper()
-        if ask_about in 'JZT' or (ask_about.isdecimal() and 0 < int(ask_about) <= len(known_suspects_and_items)):
-            return ask_about
+        keystroke = input('> ').upper()
+        if keystroke is None:
+            continue
+        if keystroke in commands.keys():
+            return keystroke
 
 
-def to_location() -> str:
-    while True:
-        where_to = input('> ').upper()
-        return where_to if where_to in move_to_location.keys() else None
+def query_clue(commands: dict[str, str]) -> str:
+    return user_input(commands)
 
 
-def run_to_location() -> str:
-    # used to test the mocker function against to_location
-    return to_location()
+def to_location(commands: dict[str, str]) -> str:
+    return user_input(commands)
