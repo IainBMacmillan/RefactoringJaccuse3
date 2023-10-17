@@ -19,10 +19,13 @@ class GameClock:
     def is_time_over(self) -> bool:
         return time.time() > self.end
 
-    def display_time_remaining(self) -> None:
+    def display_time_remaining(self, test: bool = True) -> None:
+        print()
+        if test:
+            print(f' Time left: belongs to testing')
+            return
         minutes_left = int(self.end - time.time()) // 60
         seconds_left = int(self.end - time.time()) % 60
-        print()
         print(f'Time left: {minutes_left} min, {seconds_left} sec')
 
     def display_time_taken(self) -> None:
@@ -51,25 +54,28 @@ class Accusations:
     def was_accused(self, suspect) -> bool:
         return True if suspect in self.accused else False
 
-    def display_wrongly_accused(self) -> None:
+    @staticmethod
+    def display_wrongly_accused() -> None:
         print('You have accused the wrong person, Detective!')
         print('They will not help you with anymore clues.')
         print('You go back to your TAXI.')
 
-    def display_previously_accused(self) -> None:
+    @staticmethod
+    def display_previously_accused() -> None:
         print('They are offended that you accused them,')
         print('and will not help with your investigation.')
         print('You go back to your TAXI.')
         print()
         input('Press Enter to continue...')
 
+
 @dataclass
 class DetectiveNotes:
     def __init__(self, accusations=MAX_ACCUSATIONS):
         self.notes: dict[str, str] = {
-                'J': '"J\'ACCUSE!" ({accusations} accusations left)',
-                'Z': 'Ask if they know where ZOPHIE THE CAT is.',
-                'T': 'Go back to the TAXI.'}
+                'J': f'"J\'ACCUSE!" ({accusations} accusations left)',
+                'Z': f'Ask if they know where ZOPHIE THE CAT is.',
+                'T': f'Go back to the TAXI.'}
         self.clue_index = 1
 
     def update_clues(self, local_details: dict[str:str], given_clue=None):
@@ -82,7 +88,6 @@ class DetectiveNotes:
             if f'Ask about {clue}' not in self.notes.values():
                 self._update_clue(clue)
 
-
     def _update_clue(self, clue):
         self.notes[str(self.clue_index)] = f'Ask about {clue}'
         self.clue_index += 1
@@ -94,36 +99,22 @@ class DetectiveNotes:
                 print(f' ({key}) "J\'ACCUSE!" ({accusations} accusations left)'))
 
 
-
 def suspects_zophie_answers(thief, fibbers):
     zophie_clues = {}
     for interviewee in data.zophie_suspects:
-        kind_of_clue = random.randint(1, 3)
-        if kind_of_clue == 1:
-            if interviewee not in fibbers:
-                zophie_clues[interviewee] = thief
-            elif interviewee in fibbers:
-                while True:
-                    zophie_clues[interviewee] = random.choice(data.suspects)
-                    if zophie_clues[interviewee] != thief:
-                        break
-        elif kind_of_clue == 2:
-            if interviewee not in fibbers:
-                zophie_clues[interviewee] = data.places[data.suspects.index(thief)]
-            elif interviewee in fibbers:
-                while True:
-                    zophie_clues[interviewee] = random.choice(data.places)
-                    if zophie_clues[interviewee] != data.places[data.suspects.index(thief)]:
-                        break
-        elif kind_of_clue == 3:
-            if interviewee not in fibbers:
-                zophie_clues[interviewee] = data.items[data.suspects.index(thief)]
-            elif interviewee in fibbers:
-                while True:
-                    zophie_clues[interviewee] = random.choice(data.items)
-                    if zophie_clues[interviewee] != data.items[data.suspects.index(thief)]:
-                        break
+        kind_of_clue: list[str] = random.choice([data.suspects, data.places, data.items])
+        zophie_clues[interviewee] = do_stuff_3(fibbers, interviewee, thief, kind_of_clue)
     return zophie_clues
+
+
+def do_stuff_3(fibbers, interviewee, thief, clues_type: list[str] = None) -> str:
+    if interviewee not in fibbers:
+        return clues_type[data.suspects.index(thief)]
+    elif interviewee in fibbers:
+        while True:
+            selection = random.choice(data.items)
+            if selection != clues_type[data.suspects.index(thief)]:
+                return selection
 
 
 def suspects_answers(fibbers):

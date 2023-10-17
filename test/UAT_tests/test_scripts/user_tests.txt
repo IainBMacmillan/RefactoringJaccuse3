@@ -9,7 +9,6 @@ User Test 2 - is liar, is culprit, know zophie
     Press 'Z' # ask about zophie cat
     Press '\n' # refresh user options
     Press 'T' # return to Taxi
-    Press '\n' # refresh user options
     Press 'Q' # game ends
 
 User Test 3 - not liar, not culprit, know zophie

@@ -1,0 +1,10 @@
+Enter
+A
+T
+Enter
+B
+1
+Enter
+T
+Enter
+Q

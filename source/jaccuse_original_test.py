@@ -92,14 +92,15 @@ def running_game():
                 current_location = 'TAXI'
 
         elif ask_about == 'Z':
-            ask_about_zophie(local_details["suspect"], detectives_notes.notes, zophie_clues)
+            zophie_answer = ask_about_zophie(local_details["suspect"], detectives_notes.notes, zophie_clues)
+            detectives_notes.update_clues(local_details, zophie_answer)
             current_location = current_location
 
         elif ask_about == 'T':
             current_location = 'TAXI'
 
         else:  # numerical clue from known_suspects_items
-            given_clue = ask_about_suspect_clues(ask_about, clues, local_details, detectives_notes.notes)
+            given_clue = ask_about_suspect_clues(ask_about, clues, local_details, detectives_notes)
             detectives_notes.update_clues(local_details, given_clue)
             current_location = current_location
 
@@ -120,8 +121,8 @@ def get_current_details(current_location) -> dict[str, str]:
     return local_details
 
 
-def ask_about_suspect_clues(ask_about, clues, local_details, known_suspects_and_items) -> str:
-    thing_being_asked_about = known_suspects_and_items[int(ask_about) - 1]
+def ask_about_suspect_clues(ask_about, clues, local_details, detective_notes) -> str:
+    thing_being_asked_about = detective_notes.notes[ask_about][10:]
     if thing_being_asked_about in (local_details["suspect"], local_details["item"]):
         given_clue = None
         print(' They give you this clue: "No comment."')
@@ -131,38 +132,22 @@ def ask_about_suspect_clues(ask_about, clues, local_details, known_suspects_and_
     return given_clue
 
 
-def ask_about_zophie(current_person, known_suspects_and_items, zophie_clues):
+def ask_about_zophie(current_person, detective_list, zophie_clues) -> str:
+    given_clue = None
     if current_person not in zophie_clues:
         print('"I don\'t know anything about ZOPHIE THE CAT."')
     elif current_person in zophie_clues:
         print(f' They give you this clue: "{zophie_clues[current_person]}"')
-        if zophie_clues[current_person] not in known_suspects_and_items and \
+        if zophie_clues[current_person] not in detective_list and \
                 zophie_clues[current_person] not in PLACES:
-            known_suspects_and_items.append(zophie_clues[current_person])
+            given_clue =  (zophie_clues[current_person])
+    return given_clue
 
 
 def display_winners_info(culprit, timer):
     print('You\'ve cracked the case, Detective!')
     print(f'It was {culprit} who had catnapped ZOPHIE THE CAT.')
     timer.display_time_taken()
-
-
-def display_detectives_known_clues(accusations, known_suspects_and_items):
-    print()
-    print('(J) "J\'ACCUSE!" ({} accusations left)'.format(accusations.remaining()))
-    print('(Z) Ask if they know where ZOPHIE THE CAT is.')
-    print('(T) Go back to the TAXI.')
-    for clue_ref, suspectOrItem in enumerate(known_suspects_and_items, start=1):
-        print(f'({clue_ref}) Ask about {suspectOrItem}')
-
-
-def update_known_suspects_items(known_suspects_and_items: list[str], local_details: dict[str:str], given_clue=None):
-    if given_clue is not None and given_clue not in PLACES and given_clue not in known_suspects_and_items:
-        known_suspects_and_items.append(given_clue)
-    if local_details["suspect"] not in known_suspects_and_items:
-        known_suspects_and_items.append(local_details["suspect"])
-    if local_details["item"] not in known_suspects_and_items:
-        known_suspects_and_items.append(local_details["item"])
 
 
 def display_visited_places(visited_places) -> None:
@@ -181,11 +166,3 @@ def display_accused_over(culprit) -> None:
     culprit_index = SUSPECTS.index(culprit)
     print(f'It was {culprit} at the {PLACES[culprit_index]} with the {ITEMS[culprit_index]} who catnapped her!')
     print(f'Better luck next time, Detective.')
-
-
-def main():
-    jaccuse_game()
-
-
-if __name__ == '__main__':
-    main()

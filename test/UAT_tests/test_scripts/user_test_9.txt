@@ -1,0 +1,7 @@
+Enter
+D
+1
+Enter
+T
+Enter
+Q
