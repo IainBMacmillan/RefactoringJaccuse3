@@ -32,14 +32,10 @@ def display_game_intro():
 def running_game():
     timer: GameClock = GameClock()
 
-    liars = data.liars
-    culprit = data.culprit
     current_location = 'TAXI'
-
-    clues = suspects_answers(liars)
-    zophie_clues = suspects_zophie_answers(culprit, liars)
+    clues = suspects_answers(data.liars)
+    zophie_clues = suspects_zophie_answers(data)
     accusations: Accusations = Accusations(MAX_ACCUSATIONS)
-    accused_suspects: list[str] = []
     detectives_notes: DetectiveNotes = DetectiveNotes()
     visited_places = {}
 
@@ -50,7 +46,7 @@ def running_game():
             game_running = False
             continue
         if accusations.is_none_left():
-            display_accused_over(culprit)
+            display_accused_over(data.culprit)
             game_running = False
             continue
 
@@ -84,8 +80,8 @@ def running_game():
 
         if ask_about == 'J':
             accusations.add_an_accused(local_details["suspect"])
-            if local_details["suspect"] == culprit:
-                display_winners_info(culprit, timer)
+            if local_details["suspect"] == data.culprit:
+                display_winners_info(data.culprit, timer)
                 game_running = False
             else:
                 accusations.display_wrongly_accused()

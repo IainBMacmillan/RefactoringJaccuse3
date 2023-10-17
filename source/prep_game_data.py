@@ -37,7 +37,7 @@ class GameClock:
 
 @dataclass
 class Accusations:
-    def __init__(self, max_guesses: int) -> None:
+    def __init__(self, max_guesses: int = MAX_ACCUSATIONS) -> None:
         self.count: int = max_guesses
         self.accused: list = []
 
@@ -48,8 +48,9 @@ class Accusations:
         return self.count
 
     def add_an_accused(self, innocent) -> None:
-        self.accused.append(innocent)
-        self.count -= 1
+        if self.count > 0:
+            self.accused.append(innocent)
+            self.count -= 1
 
     def was_accused(self, suspect) -> bool:
         return True if suspect in self.accused else False
@@ -99,15 +100,15 @@ class DetectiveNotes:
                 print(f' ({key}) "J\'ACCUSE!" ({accusations} accusations left)'))
 
 
-def suspects_zophie_answers(thief, fibbers):
+def suspects_zophie_answers(data):
     zophie_clues = {}
     for interviewee in data.zophie_suspects:
         kind_of_clue: list[str] = random.choice([data.suspects, data.places, data.items])
-        zophie_clues[interviewee] = do_stuff_3(fibbers, interviewee, thief, kind_of_clue)
+        zophie_clues[interviewee] = select_zophie_response(data.liars, interviewee, data.culprit, kind_of_clue)
     return zophie_clues
 
 
-def do_stuff_3(fibbers, interviewee, thief, clues_type: list[str] = None) -> str:
+def select_zophie_response(fibbers, interviewee, thief, clues_type: list[str] = None) -> str:
     if interviewee not in fibbers:
         return clues_type[data.suspects.index(thief)]
     elif interviewee in fibbers:
@@ -118,24 +119,16 @@ def do_stuff_3(fibbers, interviewee, thief, clues_type: list[str] = None) -> str
 
 
 def suspects_answers(fibbers):
-    clues = {}
-    for i, interviewee in enumerate(data.suspects):
+    clues: dict[str, dict[str, str]] = {}
+    for interviewee in data.suspects:
         if interviewee in fibbers:
             continue
-
         clues[interviewee] = {}
-        clues[interviewee]['debug_liar'] = False
         for item in data.items:
-            if random.randint(0, 1) == 0:
-                clues[interviewee][item] = data.places[data.items.index(item)]
-            else:
-                clues[interviewee][item] = data.suspects[data.items.index(item)]
+            clues[interviewee][item] = select_honest_clues_answers(item, data.suspects, data.items)
         for suspect in data.suspects:
-            if random.randint(0, 1) == 0:
-                clues[interviewee][suspect] = data.places[data.suspects.index(suspect)]
-            else:
-                clues[interviewee][suspect] = data.items[data.suspects.index(suspect)]
-    for i, interviewee in enumerate(data.suspects):
+            clues[interviewee][suspect] = select_honest_clues_answers(suspect, data.items, data.suspects)
+    for interviewee in data.suspects:
         if interviewee not in fibbers:
             continue
 
@@ -163,3 +156,9 @@ def suspects_answers(fibbers):
                     if clues[interviewee][suspect] != data.items[data.suspects.index(suspect)]:
                         break
     return clues
+
+
+def select_honest_clues_answers(suspect, clue_list, index_list) -> str:
+    clue_answers = random.choice([data.places, clue_list])
+    return clue_answers[index_list.index(suspect)]
+
