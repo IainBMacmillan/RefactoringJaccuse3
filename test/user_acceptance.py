@@ -28,7 +28,7 @@ with open(path, 'w') as f:
 """
 
 def main() -> None:
-    writer = MyWriter(sys.stdout,'approval_results/user_test_3.txt')
+    writer = MyWriter(sys.stdout,'approval_results/user_test_5.txt')
     sys.stdout = writer
 
     jaccuse_game()

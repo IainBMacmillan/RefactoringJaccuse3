@@ -108,7 +108,8 @@ def running_game():
 
 def update_visited_places(local_details, visited_places):
     if local_details["place"] not in visited_places.keys():
-        visited_places[local_details["place"]] = f'({local_details["suspect"]}, {local_details["item"]})'
+        visited_places[local_details["place"]] = (f'({local_details["suspect"].lower()}, '
+                                                  f'{local_details["item"].lower()})')
 
 
 def get_current_details(current_location) -> dict[str, str]:
