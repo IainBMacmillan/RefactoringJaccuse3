@@ -121,41 +121,26 @@ def select_zophie_response(fibbers, interviewee, thief, clues_type: list[str] = 
 def suspects_answers(fibbers):
     clues: dict[str, dict[str, str]] = {}
     for interviewee in data.suspects:
-        if interviewee in fibbers:
-            continue
         clues[interviewee] = {}
-        for item in data.items:
-            clues[interviewee][item] = select_honest_clues_answers(item, data.suspects, data.items)
-        for suspect in data.suspects:
-            clues[interviewee][suspect] = select_honest_clues_answers(suspect, data.items, data.suspects)
-    for interviewee in data.suspects:
         if interviewee not in fibbers:
-            continue
-
-        clues[interviewee] = {}
-        for item in data.items:
-            if random.randint(0, 1) == 0:
-                while True:
-                    clues[interviewee][item] = random.choice(data.places)
-                    if clues[interviewee][item] != data.places[data.items.index(item)]:
-                        break
-            else:
-                while True:
-                    clues[interviewee][item] = random.choice(data.suspects)
-                    if clues[interviewee][item] != data.suspects[data.items.index(item)]:
-                        break
-        for suspect in data.suspects:
-            if random.randint(0, 1) == 0:
-                while True:
-                    clues[interviewee][suspect] = random.choice(data.places)
-                    if clues[interviewee][suspect] != data.places[data.suspects.index(suspect)]:
-                        break
-            else:
-                while True:
-                    clues[interviewee][suspect] = random.choice(data.items)
-                    if clues[interviewee][suspect] != data.items[data.suspects.index(suspect)]:
-                        break
+            for item in data.items:
+                clues[interviewee][item] = select_honest_clues_answers(item, data.suspects, data.items)
+            for suspect in data.suspects:
+                clues[interviewee][suspect] = select_honest_clues_answers(suspect, data.items, data.suspects)
+        elif interviewee in fibbers:
+            for item in data.items:
+                clues[interviewee][item] = select_liar_clues_answers(item, data.suspects, data.items)
+            for suspect in data.suspects:
+                clues[interviewee][suspect] = select_liar_clues_answers(suspect, data.items, data.suspects)
     return clues
+
+
+def select_liar_clues_answers(item, clue_list, index_list) -> str:
+    clue_answers = random.choice([data.places, clue_list])
+    while True:
+        selection = random.choice(clue_answers)
+        if selection != clue_answers[index_list.index(item)]:
+            return selection
 
 
 def select_honest_clues_answers(suspect, clue_list, index_list) -> str:

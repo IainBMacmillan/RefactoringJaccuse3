@@ -2,6 +2,7 @@ from source.jaccuse_original_test import jaccuse_game
 import sys
 import filecmp
 
+prefix_folder: str = 'test/'
 scripts_folder: str = 'UAT_tests/test_scripts/'
 results_folder: str = 'UAT_tests/UAT_results/'
 compare_folder: str = 'UAT_tests/UAT_expected_results/'
@@ -13,10 +14,7 @@ hence adding test\\ to folder locations below.
 if running from Pycharm, remove test\\ from folder locations below.
 """
 
-prefix_folder: str = 'test/'
-
 is_run_from_terminal: bool = False
-
 if is_run_from_terminal:
     scripts_folder = f'{prefix_folder}{scripts_folder}'
     results_folder = f'{prefix_folder}{results_folder}'
