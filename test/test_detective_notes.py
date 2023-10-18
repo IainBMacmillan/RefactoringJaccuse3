@@ -1,7 +1,8 @@
 import filecmp
 import contextlib
 
-from source.prep_game_data import DetectiveNotes
+from source.initial_data import game_data as data
+from source.detective_notes import DetectiveNotes
 
 notepad: DetectiveNotes = DetectiveNotes()
 details = {'place': 'DUCK POND', 'suspect': 'DUKE HAUTDOG', 'item': 'CLEAN UNDERPANTS'}
@@ -15,11 +16,12 @@ directory: '\\prep_data\\results\\detective_notes_results_3.txt'
 hence adding test\\ to folder locations below. 
 if running from Pycharm, remove test\\ from folder locations below.
 """
+prefix_folder: str = 'test/'
 folder_results: str = 'prep_data/results/'
 folder_expected: str = 'prep_data/expected/'
-prefix_folder: str = 'test/'
 
-is_run_from_terminal: bool = True
+
+is_run_from_terminal: bool = False # see notes above on use of \\test
 
 if is_run_from_terminal:
     folder_results = f'{prefix_folder}{folder_results}'
@@ -51,7 +53,7 @@ def test_detective_notes_added_local_clues():
     with open(path, 'w') as f:
         with contextlib.redirect_stdout(f):
             print(f'\n   Test 2 - added local clues')
-            notepad.update_clues(details)
+            notepad.update_clues(details, data.places)
             notepad.display_notes(2)
     assert filecmp.cmp(f'{folder_results}{file_2}',
                        f'{folder_expected}{file_2}',
@@ -63,7 +65,7 @@ def test_detective_notes_added_given_clue_person():
     with open(path, 'w') as f:
         with contextlib.redirect_stdout(f):
             print(f'\n    Test 3 - added query_clue_person')
-            notepad.update_clues(details, clue_person)
+            notepad.update_clues(details, data.places, clue_person)
             notepad.display_notes(2)
     assert filecmp.cmp(f'{folder_results}{file_3}',
                        f'{folder_expected}{file_3}',
@@ -75,7 +77,7 @@ def test_detective_notes_added_given_clue_place():
     with open(path, 'w') as f:
         with contextlib.redirect_stdout(f):
             print(f'\n    Test 4 - added query_clue_place')
-            notepad.update_clues(details, clue_place)
+            notepad.update_clues(details, data.places, clue_place)
             notepad.display_notes(2)
     assert filecmp.cmp(f'{folder_results}{file_4}',
                        f'{folder_expected}{file_4}',
@@ -87,7 +89,7 @@ def test_detective_notes_added_given_clue_item():
     with open(path, 'w') as f:
         with contextlib.redirect_stdout(f):
             print(f'\n    Test 5 - added query_clue_item')
-            notepad.update_clues(details, clue_item)
+            notepad.update_clues(details, data.places, clue_item)
             notepad.display_notes(2)
     assert filecmp.cmp(f'{folder_results}{file_5}',
                        f'{folder_expected}{file_5}',

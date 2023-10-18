@@ -1,6 +1,8 @@
 from source.initial_data import test_data as data, move_to_location, moves_display_format
-from source.prep_game_data import Accusations, DetectiveNotes, suspects_zophie_answers, \
-    suspects_answers
+from source.prep_game_data import suspects_answers
+from source.zophie_answers import suspects_zophie_answers
+from source.detective_notes import DetectiveNotes
+from source.accused_records import AccusedRecords
 from source.game_timer import GameClock
 from source.user_entry import query_clue, to_location
 
@@ -36,7 +38,7 @@ def running_game():
     current_location = 'TAXI'
     clues = suspects_answers(data.liars)
     zophie_clues = suspects_zophie_answers(data)
-    accusations: Accusations = Accusations()
+    accused_records: AccusedRecords = AccusedRecords()
     detectives_notes: DetectiveNotes = DetectiveNotes()
     visited_places = {}
 
@@ -46,7 +48,7 @@ def running_game():
             print('You have run out of time!')
             game_running = False
             continue
-        if accusations.is_none_left():
+        if accused_records.is_none_left():
             display_accused_over(data.culprit)
             game_running = False
             continue
@@ -68,29 +70,29 @@ def running_game():
         local_details: dict[str:str] = get_current_details(current_location)
         print(f' {local_details["suspect"]} with the {local_details["item"]} is here.')
 
-        detectives_notes.update_clues(local_details)
+        detectives_notes.update_clues(local_details, PLACES)
         update_visited_places(local_details, visited_places)
 
-        if accusations.was_accused(local_details["suspect"]):
-            accusations.display_previously_accused()
+        if accused_records.was_accused(local_details["suspect"]):
+            accused_records.display_previously_accused()
             current_location = 'TAXI'
             continue
 
-        detectives_notes.display_notes(accusations.remaining())
+        detectives_notes.display_notes(accused_records.remaining())
         ask_about = query_clue(detectives_notes.notes)
 
         if ask_about == 'J':
-            accusations.add_an_accused(local_details["suspect"])
+            accused_records.add_an_accused(local_details["suspect"])
             if local_details["suspect"] == data.culprit:
                 display_winners_info(data.culprit, timer)
                 game_running = False
             else:
-                accusations.display_wrongly_accused()
+                accused_records.display_wrongly_accused()
                 current_location = 'TAXI'
 
         elif ask_about == 'Z':
             zophie_answer = ask_about_zophie(local_details["suspect"], detectives_notes.notes, zophie_clues)
-            detectives_notes.update_clues(local_details, zophie_answer)
+            detectives_notes.update_clues(local_details, PLACES, zophie_answer)
             current_location = current_location
 
         elif ask_about == 'T':
@@ -98,7 +100,7 @@ def running_game():
 
         else:  # numerical clue from known_suspects_items
             given_clue = ask_about_suspect_clues(ask_about, clues, local_details, detectives_notes)
-            detectives_notes.update_clues(local_details, given_clue)
+            detectives_notes.update_clues(local_details, PLACES, given_clue)
             current_location = current_location
 
         input('Press Enter to continue...')
@@ -137,7 +139,7 @@ def ask_about_zophie(current_person, detective_list, zophie_clues) -> str:
         print(f' They give you this clue: "{zophie_clues[current_person]}"')
         if zophie_clues[current_person] not in detective_list and \
                 zophie_clues[current_person] not in PLACES:
-            given_clue =  (zophie_clues[current_person])
+            given_clue = (zophie_clues[current_person])
     return given_clue
 
 

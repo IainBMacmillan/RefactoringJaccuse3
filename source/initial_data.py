@@ -8,7 +8,7 @@ ITEMS: list = ['FLASHLIGHT', 'CANDLESTICK', 'RAINBOW FLAG', 'HAMSTER WHEEL', 'AN
 PLACES: list = ['ZOO', 'OLD BARN', 'DUCK POND', 'CITY HALL', 'HIPSTER CAFE', 'BOWLING ALLEY', 'VIDEO GAME MUSEUM',
                 'UNIVERSITY LIBRARY', 'ALBINO ALLIGATOR PIT']
 TIME_TO_SOLVE = 300
-
+MAX_ACCUSATIONS = 3
 
 def moves() -> dict[str, str]:
     place_first_letters: dict[str, str] = {}
