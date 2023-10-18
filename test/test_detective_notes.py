@@ -13,11 +13,11 @@ clue_place = 'HIPSTER CAFE'
 folder_results: str = 'test/prep_data/results/'
 folder_expected: str = 'test/prep_data/expected/'
 
-file_1 = 'detective_notes_results_1.txt'
-file_2 = 'detective_notes_results_2.txt'
-file_3 = 'detective_notes_results_3.txt'
-file_4 = 'detective_notes_results_4.txt'
-file_5 = 'detective_notes_results_5.txt'
+file_1 = 'd_n_results_1.txt'
+file_2 = 'd_n_results_2.txt'
+file_3 = 'd_n_results_3.txt'
+file_4 = 'd_n_results_4.txt'
+file_5 = 'd_n_results_5.txt'
 
 file_list = [file_1, file_2, file_3, file_4, file_5]
 
