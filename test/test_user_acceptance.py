@@ -13,8 +13,12 @@ directory: '\\prep_data\\results\\detective_notes_results_3.txt'
 hence adding test\\ to folder locations below. 
 if running from Pycharm, remove test\\ from folder locations below.
 """
+"""
+Need to prep GameClock.display_time_remaining to set test to True in order 
+to give consistent output for file assertion
+"""
 
-is_run_from_terminal: bool = False
+is_run_from_terminal: bool = True
 if is_run_from_terminal:
     scripts_folder = f'{prefix_folder}{scripts_folder}'
     results_folder = f'{prefix_folder}{results_folder}'

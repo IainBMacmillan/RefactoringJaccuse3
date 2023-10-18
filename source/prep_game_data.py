@@ -19,7 +19,7 @@ class GameClock:
     def is_time_over(self) -> bool:
         return time.time() > self.end
 
-    def display_time_remaining(self, test: bool = True) -> None:
+    def display_time_remaining(self, test: bool = False) -> None:
         print()
         if test:
             print(f' Time left: belongs to testing')
