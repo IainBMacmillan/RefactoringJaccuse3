@@ -1,5 +1,5 @@
-from source.initial_data import test_data as data, move_to_location, moves_display_format
-from source.prep_game_data import suspects_answers
+from source.initial_data import test_data as data, directions_from_taxi, format_visited_places
+from source.suspects_answers import suspects_answers
 from source.detective_notes import DetectiveNotes
 from source.accused_records import AccusedRecords
 from source.game_timer import GameClock
@@ -34,13 +34,12 @@ def display_game_intro():
 
 def running_game():
     timer: GameClock = GameClock()
-
-    current_location = 'TAXI'
-    clues = suspects_answers(data.liars)
     zophie_clues: ZophieClues = ZophieClues(data)
     accused_records: AccusedRecords = AccusedRecords()
     detectives_notes: DetectiveNotes = DetectiveNotes()
+    clues = suspects_answers(data)
     visited_places = {}
+    current_location = 'TAXI'
 
     game_running: bool = True
     while game_running:
@@ -59,11 +58,11 @@ def running_game():
             print(' You are in your TAXI. Where do you want to go?')
             display_visited_places(visited_places)
             print('(Q)UIT GAME')
-            where_to = to_location(move_to_location)
+            where_to = to_location(directions_from_taxi)
             if where_to == 'Q':
                 print('Thanks for playing!')
                 game_running = False
-            current_location = move_to_location[where_to]
+            current_location = directions_from_taxi[where_to]
             continue
 
         print(f' You are at the {current_location}.')
@@ -142,7 +141,7 @@ def display_visited_places(visited_places) -> None:
         if show_place in visited_places:
             place_info = visited_places[show_place]
             name_label = '(' + show_place[0] + ')' + show_place[1:]
-            spacing = " " * (moves_display_format - len(show_place))
+            spacing = " " * (format_visited_places - len(show_place))
             print(f'{name_label} {spacing}{place_info}')
 
 
