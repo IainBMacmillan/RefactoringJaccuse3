@@ -18,15 +18,15 @@ class ZophieClues:
     def select_zophie_response(self, game_data, interviewee, clues_type) -> str:
         if interviewee not in game_data.liars:
             return clues_type[game_data.suspects.index(game_data.culprit)]
-        elif interviewee in game_data.liars:
-            while True:
-                selection = random.choice(game_data.items)
-                if selection != clues_type[game_data.suspects.index(game_data.culprit)]:
-                    return selection
+        while True:
+            selection = random.choice(clues_type)
+            if selection != clues_type[game_data.suspects.index(game_data.culprit)] and \
+                    selection != clues_type[game_data.suspects.index(interviewee)]:
+                return selection
 
-    def ask_about_zophie(self, current_person) -> str:
+    def ask_about_zophie(self, current_person):
         if current_person in self.clues:
             print(f' They give you this clue: "{self.clues[current_person]}"')
             return self.clues[current_person]
         print('"I don\'t know anything about ZOPHIE THE CAT."')
-        return ''  # same as None but as a string
+        return None  # same as None but as a string
