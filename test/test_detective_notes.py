@@ -10,22 +10,8 @@ clue_person = 'ESPRESSA TOFFEEPOT'
 clue_item = 'FLASHLIGHT'
 clue_place = 'HIPSTER CAFE'
 
-"""
-if running pytest from terminal get a FileNotFoundError: [Errno 2] No such file or 
-directory: '\\prep_data\\results\\detective_notes_results_3.txt'
-hence adding test\\ to folder locations below. 
-if running from Pycharm, remove test\\ from folder locations below.
-"""
-prefix_folder: str = 'test/'
-folder_results: str = 'prep_data/results/'
-folder_expected: str = 'prep_data/expected/'
-
-
-is_run_from_terminal: bool = False # see notes above on use of \\test
-
-if is_run_from_terminal:
-    folder_results = f'{prefix_folder}{folder_results}'
-    folder_expected = f'{prefix_folder}{folder_expected}'
+folder_results: str = 'test/prep_data/results/'
+folder_expected: str = 'test/prep_data/expected/'
 
 file_1 = 'detective_notes_results_1.txt'
 file_2 = 'detective_notes_results_2.txt'
