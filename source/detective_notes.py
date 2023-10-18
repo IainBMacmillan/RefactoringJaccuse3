@@ -16,17 +16,20 @@ class DetectiveNotes:
         for clue in local_details.values():
             if clue in places:
                 continue
-            if f'Ask about {clue}' not in self.notes.values():
+            if clue not in self.notes.values():
                 self._update_clue(clue)
 
     def _update_clue(self, clue):
-        self.notes[str(self.clue_index)] = f'Ask about {clue}'
+        self.notes[str(self.clue_index)] = clue
         self.clue_index += 1
 
     def display_notes(self, accusations: int = '999'):
         print()
         for key, value in self.notes.items():
-            print(f' ({key}) {value}') if key != 'J' else (
-                print(f' ({key}) "J\'ACCUSE!" ({accusations} accusations left)'))
-
+            if key == 'J':
+                print(f' ({key}) "J\'ACCUSE!" ({accusations} accusations left)')
+            elif key in 'ZT':
+                print(f' ({key}) {value}')
+            else:
+                print(f' ({key}) Ask about {value}')
 

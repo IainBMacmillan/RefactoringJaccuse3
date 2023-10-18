@@ -91,7 +91,7 @@ def running_game():
                 current_location = 'TAXI'
 
         elif ask_about == 'Z':
-            zophie_answer = ask_about_zophie(local_details["suspect"], detectives_notes.notes, zophie_clues)
+            zophie_answer = ask_about_zophie(local_details["suspect"], zophie_clues)
             detectives_notes.update_clues(local_details, PLACES, zophie_answer)
             current_location = current_location
 
@@ -121,7 +121,7 @@ def get_current_details(current_location) -> dict[str, str]:
 
 
 def ask_about_suspect_clues(ask_about, clues, local_details, detective_notes) -> str:
-    thing_being_asked_about = detective_notes.notes[ask_about][10:]
+    thing_being_asked_about = detective_notes.notes[ask_about]
     if thing_being_asked_about in (local_details["suspect"], local_details["item"]):
         given_clue = None
         print(' They give you this clue: "No comment."')
@@ -131,16 +131,12 @@ def ask_about_suspect_clues(ask_about, clues, local_details, detective_notes) ->
     return given_clue
 
 
-def ask_about_zophie(current_person, detective_list, zophie_clues) -> str:
-    given_clue = None
-    if current_person not in zophie_clues:
-        print('"I don\'t know anything about ZOPHIE THE CAT."')
-    elif current_person in zophie_clues:
+def ask_about_zophie(current_person, zophie_clues):
+    if current_person in zophie_clues:
         print(f' They give you this clue: "{zophie_clues[current_person]}"')
-        if zophie_clues[current_person] not in detective_list and \
-                zophie_clues[current_person] not in PLACES:
-            given_clue = (zophie_clues[current_person])
-    return given_clue
+        return zophie_clues[current_person]
+    print('"I don\'t know anything about ZOPHIE THE CAT."')
+    return None
 
 
 def display_winners_info(culprit, timer):
