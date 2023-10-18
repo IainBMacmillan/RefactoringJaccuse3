@@ -1,6 +1,7 @@
 from source.initial_data import test_data as data, move_to_location, moves_display_format
-from source.prep_game_data import MAX_ACCUSATIONS, GameClock, Accusations, DetectiveNotes, suspects_zophie_answers, \
+from source.prep_game_data import Accusations, DetectiveNotes, suspects_zophie_answers, \
     suspects_answers
+from source.game_timer import GameClock
 from source.user_entry import query_clue, to_location
 
 SUSPECTS = data.suspects
@@ -35,7 +36,7 @@ def running_game():
     current_location = 'TAXI'
     clues = suspects_answers(data.liars)
     zophie_clues = suspects_zophie_answers(data)
-    accusations: Accusations = Accusations(MAX_ACCUSATIONS)
+    accusations: Accusations = Accusations()
     detectives_notes: DetectiveNotes = DetectiveNotes()
     visited_places = {}
 

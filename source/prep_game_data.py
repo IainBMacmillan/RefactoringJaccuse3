@@ -1,38 +1,11 @@
 import random
-import time
 from dataclasses import dataclass
 
 from source.initial_data import test_data as data
 
-TIME_TO_SOLVE = 300
 MAX_ACCUSATIONS = 3
 liars = data.liars
 culprit = data.culprit
-
-
-@dataclass
-class GameClock:
-    def __init__(self, duration=TIME_TO_SOLVE):
-        self.start = time.time()
-        self.end = self.start + duration
-
-    def is_time_over(self) -> bool:
-        return time.time() > self.end
-
-    def display_time_remaining(self, test: bool = False) -> None:
-        print()
-        if test:
-            print(f' Time left: belongs to testing')
-            return
-        minutes_left = int(self.end - time.time()) // 60
-        seconds_left = int(self.end - time.time()) % 60
-        print(f'Time left: {minutes_left} min, {seconds_left} sec')
-
-    def display_time_taken(self) -> None:
-        minutes_taken = int(time.time() - self.start) // 60
-        seconds_taken = int(time.time() - self.start) % 60
-        print()
-        print(f'Good job! You solved it in {minutes_taken} min, {seconds_taken} sec.')
 
 
 @dataclass
