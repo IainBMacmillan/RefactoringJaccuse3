@@ -1,9 +1,9 @@
 from source.initial_data import test_data as data, move_to_location, moves_display_format
 from source.prep_game_data import suspects_answers
-from source.zophie_answers import suspects_zophie_answers
 from source.detective_notes import DetectiveNotes
 from source.accused_records import AccusedRecords
 from source.game_timer import GameClock
+from source.zophie_answers import ZophieClues
 from source.user_entry import query_clue, to_location
 
 SUSPECTS = data.suspects
@@ -37,7 +37,7 @@ def running_game():
 
     current_location = 'TAXI'
     clues = suspects_answers(data.liars)
-    zophie_clues = suspects_zophie_answers(data)
+    zophie_clues: ZophieClues = ZophieClues(data)
     accused_records: AccusedRecords = AccusedRecords()
     detectives_notes: DetectiveNotes = DetectiveNotes()
     visited_places = {}
@@ -91,7 +91,7 @@ def running_game():
                 current_location = 'TAXI'
 
         elif ask_about == 'Z':
-            zophie_answer = ask_about_zophie(local_details["suspect"], zophie_clues)
+            zophie_answer = zophie_clues.ask_about_zophie(local_details["suspect"])
             detectives_notes.update_clues(local_details, PLACES, zophie_answer)
             current_location = current_location
 
@@ -120,23 +120,15 @@ def get_current_details(current_location) -> dict[str, str]:
     return local_details
 
 
-def ask_about_suspect_clues(ask_about, clues, local_details, detective_notes) -> str:
-    thing_being_asked_about = detective_notes.notes[ask_about]
-    if thing_being_asked_about in (local_details["suspect"], local_details["item"]):
+def ask_about_suspect_clues(ask_about_idx, clues, local_details, detective_notes) -> str:
+    ask_about_clue = detective_notes.notes[ask_about_idx]
+    if ask_about_clue in (local_details["suspect"], local_details["item"]):
         given_clue = None
         print(' They give you this clue: "No comment."')
     else:
-        given_clue = clues[local_details["suspect"]][thing_being_asked_about]
+        given_clue = clues[local_details["suspect"]][ask_about_clue]
         print(f'They give you this clue: "{given_clue}"')
     return given_clue
-
-
-def ask_about_zophie(current_person, zophie_clues):
-    if current_person in zophie_clues:
-        print(f' They give you this clue: "{zophie_clues[current_person]}"')
-        return zophie_clues[current_person]
-    print('"I don\'t know anything about ZOPHIE THE CAT."')
-    return None
 
 
 def display_winners_info(culprit, timer):
