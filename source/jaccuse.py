@@ -1,4 +1,4 @@
-from source.initial_data import test_data as data, directions_from_taxi, format_visited_places
+from source.initial_data import test_data as data, GameData, directions_from_taxi, format_visited_places
 from source.suspects_answers import suspects_answers
 from source.detective_notes import DetectiveNotes
 from source.accused_records import AccusedRecords
@@ -11,9 +11,9 @@ ITEMS = data.items
 PLACES = data.places
 
 
-def jaccuse_game():
+def jaccuse_game(setup_data: GameData):
     display_game_intro()
-    running_game()
+    running_game(setup_data)
 
 
 def display_game_intro():
@@ -32,25 +32,32 @@ def display_game_intro():
     input('Press Enter to begin...')
 
 
-def running_game():
+def running_game(data_set: GameData):
     timer: GameClock = GameClock()
-    zophie_clues: ZophieClues = ZophieClues(data)
+    zophie_clues: ZophieClues = ZophieClues(data_set)
     accused_records: AccusedRecords = AccusedRecords()
     detectives_notes: DetectiveNotes = DetectiveNotes()
-    clues = suspects_answers(data)
+    clues = suspects_answers(data_set)
     visited_places = {}
     current_location = 'TAXI'
 
     game_running: bool = True
     while game_running:
-        if timer.is_time_over():
-            print('You have run out of time!')
+        if is_game_over(current_location, timer, accused_records):
             game_running = False
             continue
-        if accused_records.is_none_left():
-            display_accused_over(data.culprit)
-            game_running = False
-            continue
+        # if current_location == 'QUIT GAME':
+        #     print('Thanks for playing!')
+        #     game_running = False
+        #     continue
+        # if timer.is_time_over():
+        #     print('You have run out of time!')
+        #     game_running = False
+        #     continue
+        # if accused_records.is_none_left():
+        #     display_accused_over(data_set.culprit)
+        #     game_running = False
+        #     continue
 
         timer.display_time_remaining()
 
@@ -59,9 +66,6 @@ def running_game():
             display_visited_places(visited_places)
             print('(Q)UIT GAME')
             where_to = to_location(directions_from_taxi)
-            if where_to == 'Q':
-                print('Thanks for playing!')
-                game_running = False
             current_location = directions_from_taxi[where_to]
             continue
 
@@ -82,8 +86,8 @@ def running_game():
 
         if ask_about == 'J':
             accused_records.add_an_accused(local_details["suspect"])
-            if local_details["suspect"] == data.culprit:
-                display_winners_info(data.culprit, timer)
+            if local_details["suspect"] == data_set.culprit:
+                display_winners_info(data_set.culprit, timer)
                 game_running = False
             else:
                 accused_records.display_wrongly_accused()
@@ -103,6 +107,18 @@ def running_game():
             current_location = current_location
 
         input('Press Enter to continue...')
+
+
+def is_game_over(quit: str, timer: GameClock, accused: AccusedRecords) -> bool:
+    if quit == 'QUIT GAME':
+        print('Thanks for playing!')
+        return True
+    if timer.is_time_over():
+        print('You have run out of time!')
+        return True
+    if accused.is_none_left():
+        display_accused_over(data.culprit)
+        return True
 
 
 def update_visited_places(local_details, visited_places):

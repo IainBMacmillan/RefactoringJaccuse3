@@ -1,4 +1,5 @@
-from source.jaccuse_original_test import jaccuse_game
+from source.jaccuse import jaccuse_game
+from source.initial_test_data import test_data
 import sys
 import filecmp
 
@@ -15,7 +16,7 @@ compare_folder: str = 'test/UAT_tests/UAT_expected_results/'
 def routine_for_uat(file):
     sys.stdin = open(f'{scripts_folder}{file}', 'r')
     sys.stdout = open(f'{results_folder}{file}', 'w')
-    jaccuse_game()
+    jaccuse_game(test_data)
 
     sys.stdin.close()
     sys.stdout.close()
