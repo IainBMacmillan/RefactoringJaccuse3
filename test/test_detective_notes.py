@@ -1,7 +1,7 @@
 import filecmp
 import contextlib
 
-from source.initial_data import game_data as data
+from source.initial_test_data import test_data as data
 from source.detective_notes import DetectiveNotes
 
 notepad: DetectiveNotes = DetectiveNotes()

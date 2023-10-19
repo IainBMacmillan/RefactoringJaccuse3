@@ -1,5 +1,5 @@
 import random
-from source.initial_data import test_data
+from source.initial_test_data import test_data
 from source.zophie_answers import ZophieClues
 
 zophie_clues: ZophieClues = ZophieClues(test_data)
