@@ -8,6 +8,13 @@ class ZophieClues:
     def __init__(self, initial_data: GameData):
         self.clues = self.suspects_zophie_answers(initial_data)
 
+    def get_zophie_clue(self, interviewee):
+        if interviewee in self.clues:
+            print(f' They give you this clue: "{self.clues[interviewee]}"')
+            return self.clues[interviewee]
+        print('"I don\'t know anything about ZOPHIE THE CAT."')
+        return None  # same as None but as a string
+
     def suspects_zophie_answers(self, initial_data: GameData):
         zophie_clues = {}
         for interviewee in initial_data.zophie_suspects:
@@ -23,10 +30,3 @@ class ZophieClues:
             if selection != clues_type[game_data.suspects.index(game_data.culprit)] and \
                     selection != clues_type[game_data.suspects.index(interviewee)]:
                 return selection
-
-    def ask_about_zophie(self, current_person):
-        if current_person in self.clues:
-            print(f' They give you this clue: "{self.clues[current_person]}"')
-            return self.clues[current_person]
-        print('"I don\'t know anything about ZOPHIE THE CAT."')
-        return None  # same as None but as a string

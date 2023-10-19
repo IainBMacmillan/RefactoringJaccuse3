@@ -9,8 +9,7 @@ def user_input(commands: dict[str, str]) -> str:
 
 
 def query_clue(commands: dict[str, str]) -> str:
-    response: str = user_input(commands)
-    return response
+    return user_input(commands)
 
 
 def to_location(commands: dict[str, str]) -> str:

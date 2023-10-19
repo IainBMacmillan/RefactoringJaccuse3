@@ -21,6 +21,8 @@ def test_time_remaining():
     timer: GameClock = GameClock(time_to_solve)
     sleep(10)
     min, sec = timer.time_remaining()
+    timer.display_time_remaining(test=False)
+    timer.display_time_remaining(test=True)
     assert min == 0 and sec == 4
 
 

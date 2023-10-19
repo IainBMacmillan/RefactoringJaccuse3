@@ -1,6 +1,5 @@
 import time
 from dataclasses import dataclass
-
 from source.initial_data import TIME_TO_SOLVE
 
 

@@ -1,5 +1,5 @@
 from source.jaccuse import jaccuse_game
-from source.initial_test_data import test_data
+from initial_test_data import test_data
 import sys
 import filecmp
 

@@ -1,5 +1,5 @@
 import random
-from source.initial_test_data import test_data
+from initial_test_data import test_data
 from source.zophie_answers import ZophieClues
 
 zophie_clues: ZophieClues = ZophieClues(test_data)
@@ -11,7 +11,7 @@ def test_honest_suspect_zophie_response():
     for test_idx in range(15):
         answer = zophie_clues.select_zophie_response(test_data,
                                                      'CECIL EDGAR VANDERTON',
-                                                     clue_types)
+                                                       clue_types)
         assert answer in ['SENATOR SCHMEAR', 'ZOO', 'RAINBOW FLAG']
 
 
@@ -21,7 +21,7 @@ def test_lying_suspect_zophie_response():
     for test_idx in range(20):
         answer = zophie_clues.select_zophie_response(test_data,
                                                      'DUKE HAUTDOG',
-                                                     clue_types)
+                                                       clue_types)
         assert answer not in ['SENATOR SCHMEAR', 'ZOO', 'RAINBOW FLAG',
                           'DUCK POND', 'DUKE HAUTDOG', 'CLEAN UNDERPANTS']
 
