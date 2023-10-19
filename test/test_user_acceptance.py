@@ -1,5 +1,5 @@
 from source.jaccuse import jaccuse_game
-from initial_test_data import test_data
+from test.initial_test_data import test_data
 import sys
 import filecmp
 
@@ -9,8 +9,8 @@ to give consistent output for file assertion
 """
 
 scripts_folder: str = 'test/UAT_tests/test_scripts/'
-results_folder: str = 'test/UAT_tests/UAT_results/'
-compare_folder: str = 'test/UAT_tests/UAT_expected_results/'
+results_folder: str = 'test/UAT_tests/actual/'
+compare_folder: str = 'test/UAT_tests/expected/'
 
 
 def routine_for_uat(file):

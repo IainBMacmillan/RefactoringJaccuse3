@@ -1,7 +1,7 @@
 import filecmp
 import contextlib
 
-from initial_test_data import test_data as data
+from test.initial_test_data import test_data as data
 from source.detective_notes import DetectiveNotes
 
 notepad: DetectiveNotes = DetectiveNotes()
@@ -10,8 +10,8 @@ clue_person = 'ESPRESSA TOFFEEPOT'
 clue_item = 'FLASHLIGHT'
 clue_place = 'HIPSTER CAFE'
 
-folder_results: str = 'test/prep_data/results/'
-folder_expected: str = 'test/prep_data/expected/'
+folder_results: str = 'test/detective_results/actual/'
+folder_expected: str = 'test/detective_results/expected/'
 
 file_1 = 'd_n_results_1.txt'
 file_2 = 'd_n_results_2.txt'
