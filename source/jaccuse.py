@@ -1,5 +1,6 @@
-from source.initial_data import GameData, directions_from_taxi, format_visited_places
+from source.initial_data import GameData, directions_from_taxi
 from source.suspects_answers import SuspectAnswers
+from source.visited_places import VisitedPlaces
 from source.detective_notes import DetectiveNotes
 from source.accused_records import AccusedRecords
 from source.game_timer import GameClock
@@ -31,10 +32,10 @@ def display_game_intro():
 def running_game(data_set: GameData):
     timer: GameClock = GameClock()
     zophie_clues: ZophieClues = ZophieClues(data_set)
+    clue_answers: SuspectAnswers = SuspectAnswers(data_set)
     accused_records: AccusedRecords = AccusedRecords()
     detectives_notes: DetectiveNotes = DetectiveNotes()
-    clue_answers: SuspectAnswers = SuspectAnswers(data_set)
-    visited_places = {}
+    visited_places: VisitedPlaces = VisitedPlaces()
     current_location = 'TAXI'
 
     game_running: bool = True
@@ -42,12 +43,13 @@ def running_game(data_set: GameData):
         if is_game_over(current_location, timer, accused_records, data_set):
             game_running = False
             continue
+
         print()
         print(timer.get_time_remaining())
 
         if current_location == 'TAXI':
             print(' You are in your TAXI. Where do you want to go?')
-            display_visited_places(visited_places, data_set)
+            visited_places.display_locations(data_set)
             print('(Q)UIT GAME')
             where_to = to_location(directions_from_taxi)
             current_location = directions_from_taxi[where_to]
@@ -58,7 +60,8 @@ def running_game(data_set: GameData):
         print(f' {local_details["suspect"]} with the {local_details["item"]} is here.')
 
         detectives_notes.update_clues(local_details, data_set.places)
-        update_visited_places(local_details, visited_places)
+
+        visited_places.add_location(local_details)
 
         if accused_records.was_accused(local_details["suspect"]):
             accused_records.display_previously_accused()
@@ -71,7 +74,7 @@ def running_game(data_set: GameData):
         if ask_about == 'J':
             accused_records.add_an_accused(local_details["suspect"])
             if local_details["suspect"] == data_set.culprit:
-                display_winners_info(data_set.culprit, timer)
+                accused_records.display_winners_info(data_set.culprit, timer)
                 game_running = False
             else:
                 accused_records.display_wrongly_accused()
@@ -101,14 +104,8 @@ def is_game_over(is_quit: str, timer: GameClock, accused: AccusedRecords, data: 
         print('You have run out of time!')
         return True
     if accused.is_none_left():
-        display_accused_over(data)
+        accused.display_losing_info(data)
         return True
-
-
-def update_visited_places(local_details, visited_places):
-    if local_details["place"] not in visited_places.keys():
-        visited_places[local_details["place"]] = (f'({local_details["suspect"].lower()}, '
-                                                  f'{local_details["item"].lower()})')
 
 
 def get_current_details(current_location, data: GameData) -> dict[str, str]:
@@ -117,28 +114,3 @@ def get_current_details(current_location, data: GameData) -> dict[str, str]:
     current_item = data.items[current_location_index]
     local_details = {'place': current_location, 'suspect': current_person, 'item': current_item}
     return local_details
-
-
-def display_winners_info(culprit, timer):
-    print('You\'ve cracked the case, Detective!')
-    print(f'It was {culprit} who had catnapped ZOPHIE THE CAT.')
-    print(timer.get_time_taken())
-
-
-def display_visited_places(visited_places, data: GameData) -> None:
-    for show_place in sorted(data.places):
-        if show_place in visited_places:
-            place_info = visited_places[show_place]
-            name_label = '(' + show_place[0] + ')' + show_place[1:]
-            spacing = " " * (format_visited_places - len(show_place))
-            print(f'{name_label} {spacing}{place_info}')
-
-
-def display_accused_over(data: GameData) -> None:
-    print()
-    print(f'You have accused too many innocent people!')
-    print()
-    culprit_idx = data.suspects.index(data.culprit)
-    print(f'It was {data.culprit} at the {data.places[culprit_idx]} with '
-          f'the {data.items[culprit_idx]} who catnapped her!')
-    print(f'Better luck next time, Detective.')
