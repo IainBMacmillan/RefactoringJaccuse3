@@ -42,8 +42,8 @@ def running_game(data_set: GameData):
         if is_game_over(current_location, timer, accused_records, data_set):
             game_running = False
             continue
-
-        timer.display_time_remaining()
+        print()
+        print(timer.get_time_remaining())
 
         if current_location == 'TAXI':
             print(' You are in your TAXI. Where do you want to go?')
@@ -122,7 +122,7 @@ def get_current_details(current_location, data: GameData) -> dict[str, str]:
 def display_winners_info(culprit, timer):
     print('You\'ve cracked the case, Detective!')
     print(f'It was {culprit} who had catnapped ZOPHIE THE CAT.')
-    timer.display_time_taken()
+    print(timer.get_time_taken())
 
 
 def display_visited_places(visited_places, data: GameData) -> None:

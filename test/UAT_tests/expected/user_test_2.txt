@@ -11,11 +11,11 @@ J'ACCUSE! (a mystery game)")
     CAT in time and accuse the guilty party? 
     
 Press Enter to begin...
- Time left: belongs to testing
+Time left for patch testing
  You are in your TAXI. Where do you want to go?
 (Q)UIT GAME
 > 
- Time left: belongs to testing
+Time left for patch testing
  You are at the DUCK POND.
  DUKE HAUTDOG with the CLEAN UNDERPANTS is here.
 
@@ -24,9 +24,9 @@ Press Enter to begin...
  (T) Go back to the TAXI.
  (1) Ask about DUKE HAUTDOG
  (2) Ask about CLEAN UNDERPANTS
->  They give you this clue: "ONE COWBOY BOOT"
+>  They give you this clue: "VIDEO GAME MUSEUM"
 Press Enter to continue...
- Time left: belongs to testing
+Time left for patch testing
  You are at the DUCK POND.
  DUKE HAUTDOG with the CLEAN UNDERPANTS is here.
 
@@ -35,9 +35,8 @@ Press Enter to continue...
  (T) Go back to the TAXI.
  (1) Ask about DUKE HAUTDOG
  (2) Ask about CLEAN UNDERPANTS
- (3) Ask about ONE COWBOY BOOT
 > Press Enter to continue...
- Time left: belongs to testing
+Time left for patch testing
  You are in your TAXI. Where do you want to go?
 (D)UCK POND            (duke hautdog, clean underpants)
 (Q)UIT GAME

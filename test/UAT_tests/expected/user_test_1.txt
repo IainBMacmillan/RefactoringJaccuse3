@@ -11,7 +11,7 @@ J'ACCUSE! (a mystery game)")
     CAT in time and accuse the guilty party? 
     
 Press Enter to begin...
- Time left: belongs to testing
+Time left for patch testing
  You are in your TAXI. Where do you want to go?
 (Q)UIT GAME
 > Thanks for playing!
