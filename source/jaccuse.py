@@ -60,7 +60,6 @@ def running_game(data_set: GameData):
         print(f' {local_details["suspect"]} with the {local_details["item"]} is here.')
 
         detectives_notes.update_clues(local_details, data_set.places)
-
         visited_places.add_location(local_details)
 
         if accused_records.was_accused(local_details["suspect"]):
@@ -88,7 +87,7 @@ def running_game(data_set: GameData):
         elif ask_about == 'T':
             current_location = 'TAXI'
 
-        else:  # numerical clue from known_suspects_items
+        else:  # numerical clue from detective's notes listing of known suspects and items
             given_answer = clue_answers.get_answer(ask_about, local_details, detectives_notes)
             detectives_notes.update_clues(local_details, data_set.places, given_answer)
             current_location = current_location
@@ -108,9 +107,6 @@ def is_game_over(is_quit: str, timer: GameClock, accused: AccusedRecords, data: 
         return True
 
 
-def get_current_details(current_location, data: GameData) -> dict[str, str]:
-    current_location_index = data.places.index(current_location)
-    current_person = data.suspects[current_location_index]
-    current_item = data.items[current_location_index]
-    local_details = {'place': current_location, 'suspect': current_person, 'item': current_item}
-    return local_details
+def get_current_details(place: str, data: GameData) -> dict[str, str]:
+    index = data.places.index(place)
+    return {'place': place, 'suspect': data.suspects[index], 'item': data.items[index]}

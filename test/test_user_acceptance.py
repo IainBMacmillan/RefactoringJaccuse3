@@ -4,12 +4,6 @@ from unittest import mock
 from source.jaccuse import jaccuse_game
 from test.initial_test_data import test_data
 
-
-"""
-Need to prep GameClock.display_time_remaining to set test to True in order 
-to give consistent output for file assertion
-"""
-
 scripts_folder: str = 'test/UAT_tests/test_scripts/'
 results_folder: str = 'test/UAT_tests/actual/'
 compare_folder: str = 'test/UAT_tests/expected/'
