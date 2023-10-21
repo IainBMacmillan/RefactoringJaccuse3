@@ -1,5 +1,0 @@
-   Test 1 - initial commands
-
- (J) "J'ACCUSE!" (2 accusations left)
- (Z) Ask if they know where ZOPHIE THE CAT is.
- (T) Go back to the TAXI.

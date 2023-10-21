@@ -49,7 +49,7 @@ def running_game(data_set: GameData):
 
         if current_location == 'TAXI':
             print(' You are in your TAXI. Where do you want to go?')
-            visited_places.display_locations(data_set)
+            visited_places.display_locations()
             print('(Q)UIT GAME')
             where_to = to_location(directions_from_taxi)
             current_location = directions_from_taxi[where_to]

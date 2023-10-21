@@ -39,7 +39,7 @@ def line_compare():
         for line in difflib.unified_diff(
                 file_1_text, file_2_text, fromfile='file1.txt',
                 tofile='file2.txt', lineterm=''):
-            if line[:2] in ['->', '+>', '?']:
+            if line[:2] in ['->', '+>', '?>']:
                 print(line)
 
 

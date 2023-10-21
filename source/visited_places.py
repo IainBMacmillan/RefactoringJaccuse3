@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from source.initial_data import GameData, format_visited_places
+from source.initial_data import format_visited_places
 
 
 @dataclass
@@ -13,10 +13,9 @@ class VisitedPlaces:
         self.locations[local_details["place"]] = (f'({local_details["suspect"].lower()}, '
                                                   f'{local_details["item"].lower()})')
 
-    def display_locations(self, data: GameData) -> None:
-        for show_place in sorted(data.places):
-            if show_place in self.locations:
-                place_info = self.locations[show_place]
-                name_label = '(' + show_place[0] + ')' + show_place[1:]
-                spacing = " " * (format_visited_places - len(show_place))
-                print(f'{name_label} {spacing}{place_info}')
+    def display_locations(self) -> None:
+        sorted_locations = dict(sorted(self.locations.items()))
+        for place, suspect_item in sorted_locations.items():
+            place_command = '(' + place[0] + ')' + place[1:]
+            spacing = " " * (format_visited_places - len(place))
+            print(f'{place_command} {spacing}{suspect_item}')

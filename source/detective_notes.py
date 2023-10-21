@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 from source.initial_data import MAX_ACCUSATIONS
+
+
 @dataclass
 class DetectiveNotes:
     def __init__(self, accusations=MAX_ACCUSATIONS):
@@ -32,4 +34,3 @@ class DetectiveNotes:
                 print(f' ({key}) {value}')
             else:
                 print(f' ({key}) Ask about {value}')
-

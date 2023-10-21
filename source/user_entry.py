@@ -1,4 +1,3 @@
-
 def user_input(commands: dict[str, str]) -> str:
     while True:
         keystroke = input('> ').upper()
