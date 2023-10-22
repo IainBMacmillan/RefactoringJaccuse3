@@ -38,11 +38,7 @@ def running_game(data_set: GameData):
     visited_places: VisitedPlaces = VisitedPlaces()
     current_location = 'TAXI'
 
-    game_running: bool = True
-    while game_running:
-        if is_game_over(current_location, timer, accused_records, data_set):
-            game_running = False
-            continue
+    while not is_game_over(current_location, timer, accused_records, data_set):
 
         print()
         print(timer.get_time_remaining())
@@ -74,7 +70,7 @@ def running_game(data_set: GameData):
             accused_records.add_an_accused(local_details["suspect"])
             if local_details["suspect"] == data_set.culprit:
                 accused_records.display_winners_info(data_set.culprit, timer)
-                game_running = False
+                current_location = 'QUIT GAME'
             else:
                 accused_records.display_wrongly_accused()
                 current_location = 'TAXI'
@@ -105,6 +101,7 @@ def is_game_over(is_quit: str, timer: GameClock, accused: AccusedRecords, data: 
     if accused.is_none_left():
         accused.display_losing_info(data)
         return True
+    return False
 
 
 def get_current_details(place: str, data: GameData) -> dict[str, str]:
