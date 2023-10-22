@@ -31,7 +31,7 @@ PLACES: list = ['ZOO', 'OLD BARN', 'DUCK POND', 'CITY HALL', 'HIPSTER CAFE', 'BO
 TIME_TO_SOLVE = 300
 MAX_ACCUSATIONS = 3
 directions_from_taxi: dict[str, str] = moves()
-format_visited_places = len(max(PLACES, key=len))
+format_visited_places: int = len(max(PLACES, key=len))
 
 
 shuffle(PLACES)

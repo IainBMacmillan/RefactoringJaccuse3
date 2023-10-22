@@ -14,12 +14,8 @@ class DetectiveNotes:
     def update_clues(self, local_details: dict[str:str], places: list[str], given_clue=None):
         if given_clue is not None:
             local_details['given_clue'] = given_clue
-
         for clue in local_details.values():
-            if clue in places:
-                continue
-            if clue not in self.notes.values():
-                self._update_clue(clue)
+            if (clue not in self.notes.values() and clue not in places): self._update_clue(clue)
 
     def _update_clue(self, clue):
         self.notes[str(self.clue_index)] = clue
